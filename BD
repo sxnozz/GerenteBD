@@ -1,0 +1,65 @@
+
+CREATE DATABASE Gerente;
+USE Gerente;
+CREATE TABLE Usuarios (
+    usuario_id bigint auto_increment not null primary key,
+    nome VARCHAR(255) not null,
+    senha VARCHAR(255) not null,
+    email VARCHAR(255) not null
+);
+
+
+CREATE TABLE Categorias (
+    categoria_id bigint auto_increment not null primary key,
+    nome VARCHAR(255) not null
+);
+
+CREATE TABLE Produtos (
+    produto_id bigint auto_increment not null primary key,
+    nome VARCHAR(255) not null,
+    categoria_id bigint not null,
+    descricao VARCHAR(255),
+    foreign key (categoria_id) references categorias (categoria_id)
+);
+
+
+CREATE TABLE Estoque (
+    estoque_id bigint auto_increment not null primary key,
+    produto_id bigint not null,
+    quantidade int not null,
+    preco decimal(10, 2) not null,
+    data_atualizacao DATE,
+    foreign key (produto_id) references produtos (produto_id)
+);
+
+
+CREATE TABLE Pedidos (
+    pedido_id bigint auto_increment not null primary key,
+    usuario_id bigint not null,
+    data_pedido DATE not null,
+    status VARCHAR(50),
+    foreign key (usuario_id) references usuarios (usuario_id)
+);
+
+
+
+
+CREATE TABLE Pedido_produto (
+    pedido_id bigint not null,
+    produto_id bigint not null,
+    quantidade int not null,
+    foreign key (pedido_id) references pedidos (pedido_id),
+    foreign key (produto_id) references produtos (produto_id),
+    primary key (pedido_id, produto_id)
+);
+
+
+
+INSERT INTO Produtos (nome, categoria_id, descricao)
+VALUES ('Nome do Produto', 1, 'Descrição do Produto');
+
+
+INSERT INTO Estoque (produto_id, quantidade, preco)
+VALUES (3, 50, 10.00);
+
+
