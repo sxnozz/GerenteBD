@@ -12,16 +12,16 @@ import javax.swing.border.EmptyBorder;
 import br.ifsul.bdii.domain.Usuario;
 import br.ifsul.bdii.service.UsuarioService;
 
-public class UILogin extends JFrame {
+public class UICriarConta extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
+    private JTextField txtNome;
     private JTextField txtEmail;
     private JTextField txtSenha;
     private JLabel txtStatus;
-    private Usuario usuarioLogado;
 
-    public UILogin() {
+    public UICriarConta() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 334, 300);
         contentPane = new JPanel();
@@ -29,32 +29,32 @@ public class UILogin extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+        JLabel lblNome = new JLabel("Nome:");
+        lblNome.setBounds(10, 22, 89, 14);
+        contentPane.add(lblNome);
+
+        txtNome = new JTextField();
+        txtNome.setBounds(97, 19, 165, 20);
+        contentPane.add(txtNome);
+        txtNome.setColumns(10);
+
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(10, 22, 89, 14);
+        lblEmail.setBounds(10, 59, 89, 14);
         contentPane.add(lblEmail);
 
         txtEmail = new JTextField();
-        txtEmail.setBounds(97, 19, 165, 20);
+        txtEmail.setBounds(97, 56, 165, 20);
         contentPane.add(txtEmail);
         txtEmail.setColumns(10);
 
         JLabel lblSenha = new JLabel("Senha:");
-        lblSenha.setBounds(10, 59, 89, 14);
+        lblSenha.setBounds(10, 96, 89, 14);
         contentPane.add(lblSenha);
 
         txtSenha = new JTextField();
-        txtSenha.setBounds(97, 56, 165, 20);
+        txtSenha.setBounds(97, 93, 165, 20);
         contentPane.add(txtSenha);
         txtSenha.setColumns(10);
-
-        JButton btnLogin = new JButton("Login");
-        btnLogin.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                login();
-            }
-        });
-        btnLogin.setBounds(97, 221, 89, 23);
-        contentPane.add(btnLogin);
 
         JButton btnCriarConta = new JButton("Criar Conta");
         btnCriarConta.addActionListener(new ActionListener() {
@@ -62,34 +62,30 @@ public class UILogin extends JFrame {
                 criarConta();
             }
         });
-        btnCriarConta.setBounds(97, 250, 89, 23);
+        btnCriarConta.setBounds(97, 221, 89, 23);
         contentPane.add(btnCriarConta);
 
         txtStatus = new JLabel("");
-        txtStatus.setBounds(107, 275, 210, 14);
+        txtStatus.setBounds(107, 250, 210, 14);
         contentPane.add(txtStatus);
     }
 
-    public Usuario getUsuarioLogado() {
-        return usuarioLogado;
-    }
-
-    private void login() {
+    private void criarConta() {
+        String nome = txtNome.getText();
         String email = txtEmail.getText();
         String senha = txtSenha.getText();
 
-        usuarioLogado = UsuarioService.findByEmailAndSenha(email, senha);
+        Usuario usuario = new Usuario();
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+        usuario.setSenha(senha);
 
-        if (usuarioLogado != null) {
-            txtStatus.setText("Login bem-sucedido!");
+        if (UsuarioService.save(usuario) != null) {
+            txtStatus.setText("Conta criada com sucesso!");
             dispose();
-            new UIMenu().setVisible(true);
+            new UILogin().setVisible(true);
         } else {
-            txtStatus.setText("Email ou senha incorretos.");
+            txtStatus.setText("Erro ao criar conta.");
         }
-    }
-
-    private void criarConta() {
-        new UICriarConta().setVisible(true);
     }
 }

@@ -2,6 +2,7 @@ package br.ifsul.bdii.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
@@ -133,10 +134,21 @@ public class UIGerenciamentoEstoque extends JFrame {
         p.setNome(txtNome.getText());
         p.setQuantidade(Integer.parseInt(txtQuantidade.getText()));
         p.setCategoriaId(((Categoria) cmbCategoria.getSelectedItem()).getCategoriaId());
-
-        ProdutoService.save(p);
-
-        txtStatus.setText("Produto cadastrado!");
+    
+        // Salvar produto
+        Produto produtoSalvo = ProdutoService.save(p);
+        if (produtoSalvo != null) {
+            // Criar o estoque para o produto
+            Estoque estoque = new Estoque();
+            estoque.setProdutoId(produtoSalvo.getProdutosId());
+            estoque.setQuantidade(Integer.parseInt(txtQuantidade.getText()));
+            estoque.setPreco(new BigDecimal(txtPreco.getText())); // Adicionando o preço
+            
+            EstoqueService.save(estoque); // Salvar o estoque
+            txtStatus.setText("Produto e estoque cadastrados!");
+        } else {
+            txtStatus.setText("Erro ao cadastrar o produto.");
+        }
     }
 
     private void atualizarEstoque() {

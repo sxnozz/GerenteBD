@@ -157,13 +157,13 @@ public class EstoqueService {
     
     }
     public static Estoque findByProdutoId(Long produtoId) {
+        final String selectStatement = "SELECT * FROM Estoque WHERE produto_id = ?;";
         Estoque estoque = null;
-        final String query = "SELECT * FROM Estoque WHERE produto_id = ?;";
     
         try {
             Connection conn = DBConnection.openConnection();
-            PreparedStatement ps = conn.prepareStatement(query);
-            ps.setLong(1, produtoId); // Buscar pelo produto_id, não estoque_id
+            PreparedStatement ps = conn.prepareStatement(selectStatement);
+            ps.setLong(1, produtoId); // Buscar pelo produto_id
             
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -172,9 +172,7 @@ public class EstoqueService {
                 estoque.setProdutoId(rs.getLong("produto_id"));
                 estoque.setQuantidade(rs.getInt("quantidade"));
                 estoque.setPreco(rs.getBigDecimal("preco"));
-                estoque.setDataAtualizacao(rs.getTimestamp("data_atualizacao").toLocalDateTime());
             }
-    
             conn.close();
         } catch (SQLException e) {
             System.err.println("Erro ao buscar estoque: " + e.getMessage());
